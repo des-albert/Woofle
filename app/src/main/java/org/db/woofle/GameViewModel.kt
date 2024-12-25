@@ -14,7 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class GameViewModel(private val repository: GameRepository): ViewModel() {
+class GameViewModel(private val repository: GameRepository) : ViewModel() {
   var guesses = mutableStateListOf<String>()
     private set
   var currentGuess by mutableStateOf("")
@@ -29,9 +29,9 @@ class GameViewModel(private val repository: GameRepository): ViewModel() {
     private set
   var isGuessCorrect by mutableStateOf(false)
     private set
-  var guessCount by mutableStateOf(0)
+  var guessCount by mutableIntStateOf(0)
     private set
-
+  var history = mutableStateListOf<Int>(0, 0, 0, 0, 0, 0)
 
   private var words = listOf<String>()
   private var validWords = setOf<String>()
@@ -42,19 +42,16 @@ class GameViewModel(private val repository: GameRepository): ViewModel() {
   fun loadWords(context: Context) {
     viewModelScope.launch {
 
-      words = withContext(Dispatchers.IO)     {
+      words = withContext(Dispatchers.IO) {
         readWordsFromAssets(context)
       }
-      validWords = withContext(Dispatchers.IO)     {
+      validWords = withContext(Dispatchers.IO) {
         readValidWordsFromAssets(context)
       }
       selectTargetWord()
     }
   }
 
-  private fun selectRandomTargetWord() {
-    targetWord = words.random()
-  }
 
   private fun selectTargetWord() {
     if (words.isNotEmpty()) {
@@ -80,6 +77,7 @@ class GameViewModel(private val repository: GameRepository): ViewModel() {
       currentGuess += char
     }
   }
+
   fun deleteLastChar() {
     if (currentGuess.isNotEmpty()) {
       currentGuess = currentGuess.dropLast(1)
@@ -93,10 +91,11 @@ class GameViewModel(private val repository: GameRepository): ViewModel() {
         guesses.add(currentGuess)
         colors.add(checkGuess(currentGuess, targetWord))
         updateKeyStates(currentGuess, targetWord)
-        guessCount++
+        guessCount = guessCount + 1
         currentGuess = ""
         if (guesses.last() == targetWord) {
           message = "Correct in $guessCount attempts"
+          history[guessCount - 1] = history[guessCount - 1] + 1
           isGuessCorrect = true
         } else if (guesses.size >= 6) {
           message = "Game over! The word was $targetWord."
@@ -117,6 +116,7 @@ class GameViewModel(private val repository: GameRepository): ViewModel() {
 
   fun proceedToNextLevel() {
     saveCurrentLevel(level)
+    saveHistory(history)
     level++
     selectTargetWord()
     guesses.clear()
@@ -124,7 +124,7 @@ class GameViewModel(private val repository: GameRepository): ViewModel() {
     keyStates.clear()
     guessCount = 0
     isGuessCorrect = false
-    message = "Guess the word!"
+    message = "Guess the word"
   }
 
 
@@ -173,4 +173,20 @@ class GameViewModel(private val repository: GameRepository): ViewModel() {
     level = repository.getLevel() + 1
     currentIndex = level - 1
   }
+
+  fun saveHistory(history: List<Int>) {
+    val historyString = history.joinToString(separator = ",")
+    repository.saveHistory(historyString)
+  }
+
+  fun loadHistory() {
+    var historyString = repository.getHistory()
+    if (!historyString.isNullOrEmpty()) {
+      val historyList = historyString.split(",").map { it.trim().toInt() }
+      history.clear()
+      history.addAll(historyList)
+
+    }
+  }
+
 }

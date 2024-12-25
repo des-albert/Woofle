@@ -12,4 +12,12 @@ class GameRepository(context: Context) {
   fun getLevel(): Int {
     return sharedPreferences.getInt("lastLevel", 0)
   }
+
+  fun saveHistory(value: String) {
+    sharedPreferences.edit().putString("history", value).apply()
+  }
+
+  fun getHistory(): String? {
+    return sharedPreferences.getString("history", null)
+  }
 }
