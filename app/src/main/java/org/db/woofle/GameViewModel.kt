@@ -1,6 +1,7 @@
 package org.db.woofle
 
 import android.content.Context
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,9 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
   private var validWords = setOf<String>()
   private var targetWord = ""
   private var currentIndex = 0
+  private var correctColor: Color = Color(0x7F000000)
+  private var closeColor: Color = Color(0x7F000000)
+  private var incorrectColor: Color = Color(0x7F000000)
 
 
   fun loadWords(context: Context) {
@@ -84,6 +88,13 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
     }
   }
 
+  fun setColors(guessColors: List<Color>) {
+    correctColor = guessColors[0]
+    closeColor = guessColors[1]
+    incorrectColor = guessColors[2]
+
+  }
+
 
   fun submitGuess() {
     if (currentGuess.length == 5) {
@@ -129,24 +140,24 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
 
 
   private fun checkGuess(guess: String, targetWord: String): List<Color> {
-    val result = MutableList(guess.length) { Color(0xFF5B5B5B) }
+    val result = MutableList(guess.length) { incorrectColor }
     val targetWordChars = targetWord.toMutableList()
 
     // First pass: Check for correct letters in the correct position
     guess.forEachIndexed { index, c ->
       if (c == targetWord[index]) {
-        result[index] = Color(0xFF4CAF50)
+        result[index] = correctColor
         targetWordChars[index] = ' ' // Mark this character as used
       }
     }
 
     // Second pass: Check for correct letters in the wrong position
     guess.forEachIndexed { index, c ->
-      if (result[index] != Color(0xFF4CAF50) && targetWordChars.contains(c)) {
-        result[index] = Color(0xFFFFA000)
+      if (result[index] != correctColor && targetWordChars.contains(c)) {
+        result[index] = closeColor
         targetWordChars[targetWordChars.indexOf(c)] = ' ' // Mark this character as used
-      } else if (result[index] != Color(0xFF4CAF50)) {
-        result[index] = Color(0xFF5B5B5B) // Incorrect letter
+      } else if (result[index] != correctColor) {
+        result[index] = incorrectColor // Incorrect letter
       }
     }
 
@@ -156,11 +167,11 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
   private fun updateKeyStates(guess: String, targetWord: String) {
     guess.forEachIndexed { index, c ->
       if (c == targetWord[index]) {
-        keyStates[c] = Color(0xFF4CAF50)
-      } else if (targetWord.contains(c) && keyStates[c] != Color(0xFF4CAF50)) {
-        keyStates[c] = Color(0xFFFFA000)
-      } else if (keyStates[c] != Color(0xFF4CAF50) && keyStates[c] != Color(0xFFFFA000)) {
-        keyStates[c] = Color(0xFF5B5B5B)
+        keyStates[c] = correctColor
+      } else if (targetWord.contains(c) && keyStates[c] != correctColor) {
+        keyStates[c] = closeColor
+      } else if (keyStates[c] != correctColor && keyStates[c] != closeColor) {
+        keyStates[c] = incorrectColor
       }
     }
   }

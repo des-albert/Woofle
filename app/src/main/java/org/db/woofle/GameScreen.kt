@@ -45,6 +45,11 @@ fun GameScreen(
   val scores = gameViewModel.history
   val level = gameViewModel.level
   val message = gameViewModel.message
+  val displayColors = listOf(
+    MaterialTheme.colorScheme.primary,
+    MaterialTheme.colorScheme.secondary,
+    MaterialTheme.colorScheme.onSurface
+  )
 
   LaunchedEffect(Unit) {
     gameViewModel.loadCurrentLevel()
@@ -52,6 +57,8 @@ fun GameScreen(
     gameViewModel.loadWords(context)
 
   }
+
+  gameViewModel.setColors(displayColors)
 
   Box(
     Modifier
@@ -62,7 +69,7 @@ fun GameScreen(
       painter = painterResource(id = R.drawable.izzy),
       contentDescription = null,
       modifier = Modifier.fillMaxSize(),
-      alpha = 0.60f,
+      alpha = 0.50f,
       contentScale = ContentScale.Crop
     )
     Column(
@@ -95,7 +102,7 @@ fun GameScreen(
                   text = guess.getOrNull(i)?.toString() ?: "",
                   fontSize = 24.sp,
                   fontWeight = FontWeight.Bold,
-                  color = Color.Black
+                  color = MaterialTheme.colorScheme.onBackground
                 )
               }
             }
@@ -116,7 +123,7 @@ fun GameScreen(
                   text = gameViewModel.currentGuess.getOrNull(i)?.toString() ?: "",
                   fontSize = 24.sp,
                   fontWeight = FontWeight.Bold,
-                  color = Color.Black
+                  color = MaterialTheme.colorScheme.onBackground
                 )
               }
             }
@@ -133,7 +140,7 @@ fun GameScreen(
             onBackspace = { gameViewModel.deleteLastChar() },
             keyStates = gameViewModel.keyStates
           )
-          Spacer(modifier = Modifier.height(12.dp))
+          Spacer(modifier = Modifier.height(8.dp))
           Button(onClick = {
             gameViewModel.submitGuess()
           }) {
@@ -149,7 +156,7 @@ fun GameScreen(
           val maxScore = scores.maxOrNull() ?: 1
           scores.forEachIndexed {index, value ->
             Bar(index, value, maxScore, MaterialTheme.colorScheme.tertiary)
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(4.dp))
           }
         }
 
@@ -170,8 +177,8 @@ fun Bar(
   Row(
     modifier = Modifier
       .fillMaxWidth()
-      .height(16.dp),
-    verticalAlignment = Alignment.Bottom
+      .height(20.dp),
+    verticalAlignment = Alignment.CenterVertically
   ) {
     Text(
       text = (index + 1).toString(),
@@ -182,7 +189,7 @@ fun Bar(
     Canvas(
       modifier = Modifier
         .weight(1f)
-        .height(12.dp)
+        .height(14.dp)
     ) {
       drawIntoCanvas { canvas ->
         drawRect(
