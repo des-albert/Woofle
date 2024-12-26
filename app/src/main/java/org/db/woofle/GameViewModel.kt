@@ -1,6 +1,8 @@
 package org.db.woofle
 
+import android.app.Application
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.graphics.Color
@@ -8,13 +10,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.setValue
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class GameViewModel(private val repository: GameRepository) : ViewModel() {
+class GameViewModel(application: Application) : AndroidViewModel(application) {
   var guesses = mutableStateListOf<String>()
     private set
   var currentGuess by mutableStateOf("")
@@ -32,24 +34,30 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
   var guessCount by mutableIntStateOf(0)
     private set
   var history = mutableStateListOf<Int>(0, 0, 0, 0, 0, 0)
+    private set
+  var correctColor by mutableStateOf<Color>(Color(0x7F000000))
+    private set
+  var closeColor by mutableStateOf<Color>(Color(0x7F000000))
+    private set
+  var incorrectColor by mutableStateOf<Color>(Color(0x7F000000))
+    private set
 
+  private val appContext = application.applicationContext
+  private val sharedPreferences: SharedPreferences = appContext.getSharedPreferences("prefs", Context.MODE_PRIVATE)
   private var words = listOf<String>()
   private var validWords = setOf<String>()
   private var targetWord = ""
   private var currentIndex = 0
-  private var correctColor: Color = Color(0x7F000000)
-  private var closeColor: Color = Color(0x7F000000)
-  private var incorrectColor: Color = Color(0x7F000000)
 
 
-  fun loadWords(context: Context) {
+  fun loadWords() {
     viewModelScope.launch {
 
       words = withContext(Dispatchers.IO) {
-        readWordsFromAssets(context)
+        readWordsFromAssets(appContext)
       }
       validWords = withContext(Dispatchers.IO) {
-        readValidWordsFromAssets(context)
+        readValidWordsFromAssets(appContext)
       }
       selectTargetWord()
     }
@@ -91,7 +99,6 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
     correctColor = guessColors[0]
     closeColor = guessColors[1]
     incorrectColor = guessColors[2]
-
   }
 
 
@@ -108,7 +115,7 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
           history[guessCount - 1] = history[guessCount - 1] + 1
           isGuessCorrect = true
         } else if (guesses.size >= 6) {
-          message = "Game over! The word was $targetWord."
+          message = "Game over. The word was $targetWord."
           level = 1
           selectTargetWord()
           guesses.clear()
@@ -116,10 +123,10 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
           keyStates.clear()
           guessCount = 0
         } else {
-          message = "Try again!"
+          message = "Try again"
         }
       } else {
-        message = "Invalid word! Try again."
+        message = "Invalid word. Try again."
       }
     }
   }
@@ -176,21 +183,21 @@ class GameViewModel(private val repository: GameRepository) : ViewModel() {
   }
 
   fun saveCurrentLevel(level: Int) {
-    repository.saveLevel(level)
+    sharedPreferences.edit().putInt("lastLevel", level).apply()
   }
 
   fun loadCurrentLevel() {
-    level = repository.getLevel() + 1
+    level =  sharedPreferences.getInt("lastLevel", 0) + 1
     currentIndex = level - 1
   }
 
   fun saveHistory(history: List<Int>) {
     val historyString = history.joinToString(separator = ",")
-    repository.saveHistory(historyString)
+    sharedPreferences.edit().putString("history", historyString).apply()
   }
 
   fun loadHistory() {
-    var historyString = repository.getHistory()
+    var historyString = sharedPreferences.getString("history", null)
     if (!historyString.isNullOrEmpty()) {
       val historyList = historyString.split(",").map { it.trim().toInt() }
       history.clear()

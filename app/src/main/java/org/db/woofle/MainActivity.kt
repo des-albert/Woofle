@@ -12,7 +12,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import org.db.woofle.ui.theme.WoofleTheme
 
 class MainActivity : ComponentActivity() {
-  private lateinit var viewModel: GameViewModel
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContent {
@@ -21,10 +20,7 @@ class MainActivity : ComponentActivity() {
           modifier = Modifier.fillMaxSize(),
           color = MaterialTheme.colorScheme.background
         ) {
-          val repository = GameRepository(applicationContext)
-          viewModel = GameViewModel(repository)
-
-          GameScreen(viewModel)
+          GameScreen()
         }
       }
     }

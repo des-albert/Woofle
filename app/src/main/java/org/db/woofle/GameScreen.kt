@@ -16,7 +16,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.ElevatedButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -28,7 +29,6 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -41,7 +41,7 @@ fun GameScreen(
   gameViewModel: GameViewModel = viewModel()
 
 ) {
-  val context = LocalContext.current
+
   val scores = gameViewModel.history
   val level = gameViewModel.level
   val message = gameViewModel.message
@@ -54,11 +54,9 @@ fun GameScreen(
   LaunchedEffect(Unit) {
     gameViewModel.loadCurrentLevel()
     gameViewModel.loadHistory()
-    gameViewModel.loadWords(context)
-
+    gameViewModel.loadWords()
+    gameViewModel.setColors(displayColors)
   }
-
-  gameViewModel.setColors(displayColors)
 
   Box(
     Modifier
@@ -102,7 +100,7 @@ fun GameScreen(
                   text = guess.getOrNull(i)?.toString() ?: "",
                   fontSize = 24.sp,
                   fontWeight = FontWeight.Bold,
-                  color = MaterialTheme.colorScheme.onBackground
+                  color = MaterialTheme.colorScheme.tertiary
                 )
               }
             }
@@ -123,7 +121,7 @@ fun GameScreen(
                   text = gameViewModel.currentGuess.getOrNull(i)?.toString() ?: "",
                   fontSize = 24.sp,
                   fontWeight = FontWeight.Bold,
-                  color = MaterialTheme.colorScheme.onBackground
+                  color = MaterialTheme.colorScheme.tertiary
                 )
               }
             }
@@ -131,8 +129,17 @@ fun GameScreen(
         }
         Spacer(modifier = Modifier.height(12.dp))
         if (gameViewModel.isGuessCorrect) {
-          Button(onClick = { gameViewModel.proceedToNextLevel() }) {
-            Text("Next Level")
+          ElevatedButton(
+            colors = ButtonDefaults.elevatedButtonColors(
+              containerColor = MaterialTheme.colorScheme.background
+            ),
+            onClick = {
+              gameViewModel.proceedToNextLevel()
+            }) {
+            Text(
+              text = "Next Level",
+              style = MaterialTheme.typography.bodyMedium,
+              color = MaterialTheme.colorScheme.onBackground)
           }
         } else {
           Keyboard(
@@ -141,10 +148,16 @@ fun GameScreen(
             keyStates = gameViewModel.keyStates
           )
           Spacer(modifier = Modifier.height(8.dp))
-          Button(onClick = {
-            gameViewModel.submitGuess()
+          ElevatedButton(
+            colors = ButtonDefaults.elevatedButtonColors(
+              containerColor = MaterialTheme.colorScheme.background
+            ),
+            onClick = {gameViewModel.submitGuess()
           }) {
-            Text("Submit")
+            Text(
+              text = "Submit",
+              style = MaterialTheme.typography.bodyMedium,
+              color = MaterialTheme.colorScheme.onBackground)
           }
         }
         Column(
@@ -155,7 +168,7 @@ fun GameScreen(
         ) {
           val maxScore = scores.maxOrNull() ?: 1
           scores.forEachIndexed {index, value ->
-            Bar(index, value, maxScore, MaterialTheme.colorScheme.tertiary)
+            Bar(index, value, maxScore, MaterialTheme.colorScheme.onPrimary)
             Spacer(modifier = Modifier.height(4.dp))
           }
         }
