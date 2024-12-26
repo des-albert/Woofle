@@ -28,6 +28,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
+import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,8 +47,8 @@ fun GameScreen(
   val level = gameViewModel.level
   val message = gameViewModel.message
   val displayColors = listOf(
-    MaterialTheme.colorScheme.primary,
-    MaterialTheme.colorScheme.secondary,
+    MaterialTheme.colorScheme.surface,
+    MaterialTheme.colorScheme.error,
     MaterialTheme.colorScheme.onSurface
   )
 
@@ -100,7 +101,7 @@ fun GameScreen(
                   text = guess.getOrNull(i)?.toString() ?: "",
                   fontSize = 24.sp,
                   fontWeight = FontWeight.Bold,
-                  color = MaterialTheme.colorScheme.tertiary
+                  color = MaterialTheme.colorScheme.onPrimary
                 )
               }
             }
@@ -114,14 +115,14 @@ fun GameScreen(
               Box(
                 modifier = Modifier
                   .size(48.dp)
-                  .background(Color.LightGray, RoundedCornerShape(4.dp)),
+                  .background(MaterialTheme.colorScheme.background, RoundedCornerShape(4.dp)),
                 contentAlignment = Alignment.Center
               ) {
                 Text(
                   text = gameViewModel.currentGuess.getOrNull(i)?.toString() ?: "",
                   fontSize = 24.sp,
                   fontWeight = FontWeight.Bold,
-                  color = MaterialTheme.colorScheme.tertiary
+                  color = MaterialTheme.colorScheme.onPrimary
                 )
               }
             }
@@ -138,6 +139,7 @@ fun GameScreen(
             }) {
             Text(
               text = "Next Level",
+              fontWeight = FontWeight.Bold,
               style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.onBackground)
           }
@@ -156,6 +158,7 @@ fun GameScreen(
           }) {
             Text(
               text = "Submit",
+              fontWeight = FontWeight.Bold,
               style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.onBackground)
           }
@@ -191,11 +194,14 @@ fun Bar(
     modifier = Modifier
       .fillMaxWidth()
       .height(20.dp),
-    verticalAlignment = Alignment.CenterVertically
+    verticalAlignment = Alignment.CenterVertically,
+    horizontalArrangement = Arrangement.spacedBy(4.dp)
   ) {
     Text(
       text = (index + 1).toString(),
-      fontSize = 12.sp,
+      style = MaterialTheme.typography.bodyMedium,
+      fontSize = 14.sp,
+      fontWeight = FontWeight.Bold,
       color = MaterialTheme.colorScheme.onPrimary,
     )
     Spacer(modifier = Modifier.width(8.dp))
@@ -209,17 +215,17 @@ fun Bar(
           color = color,
           size = Size(barWidth, size.height)
         )
+        }
       }
     }
     Spacer(modifier = Modifier.width(8.dp))
     Text(
       text = value.toString(),
-      fontSize = 12.sp,
+      style = MaterialTheme.typography.bodyMedium,
+      fontSize = 14.sp,
+      fontWeight = FontWeight.Bold,
       color = MaterialTheme.colorScheme.onPrimary,
     )
   }
-
 }
-
-
 

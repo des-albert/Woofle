@@ -18,6 +18,7 @@ import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -50,7 +51,7 @@ fun Keyboard(
             modifier
               .height(40.dp)
               .weight(1f)
-              .background(keyStates[char] ?: Color.LightGray, RoundedCornerShape(4.dp))
+              .background(keyStates[char] ?: MaterialTheme.colorScheme.background, RoundedCornerShape(4.dp))
               .clickable(
                 onClick = {
                   onKeyPress(char)
@@ -60,7 +61,8 @@ fun Keyboard(
           ) {
             Text(
               text = char.toString(),
-              color = MaterialTheme.colorScheme.tertiary,
+              fontWeight = FontWeight.Bold,
+              color = MaterialTheme.colorScheme.onPrimary,
               fontSize = 18.sp
             )
           }
@@ -72,7 +74,7 @@ fun Keyboard(
               .height(40.dp)
               .weight(1f)
               .clip(RoundedCornerShape(2.dp))
-              .background(Color.LightGray,RoundedCornerShape(4.dp))
+              .background(MaterialTheme.colorScheme.background,RoundedCornerShape(4.dp))
               .clickable(
                 onClick = {
                   onBackspace()
@@ -82,7 +84,8 @@ fun Keyboard(
           ) {
             Text(
               text = "⌫",
-              color = MaterialTheme.colorScheme.tertiary,
+              fontWeight = FontWeight.Bold,
+              color = MaterialTheme.colorScheme.onPrimary,
               fontSize = 18.sp
             )
           }
