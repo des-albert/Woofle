@@ -58,9 +58,10 @@ dependencies {
   implementation(libs.androidx.lifecycle.viewmodel.compose)
   implementation(libs.androidx.lifecycle.livedata.ktx)
   implementation(libs.androidx.ui.text.google.fonts)
+  implementation(libs.androidx.navigation.compose)
 }
-
 // implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.8.7")
 // implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.7")
 // implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.8.7")
 // implementation("androidx.compose.ui:ui-text-google-fonts:1.7.6")
+// implementation("androidx.navigation:navigation-compose:2.8.5")

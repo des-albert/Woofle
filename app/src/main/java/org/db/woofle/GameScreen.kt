@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ElevatedButton
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -32,13 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GameScreen(
   gameViewModel: GameViewModel = viewModel()
 
 ) {
-
   val scores = gameViewModel.history
   val level = gameViewModel.level
   val message = gameViewModel.message
@@ -48,17 +48,16 @@ fun GameScreen(
     MaterialTheme.colorScheme.onSurface
   )
 
+
   LaunchedEffect(Unit) {
     gameViewModel.loadCurrentLevel()
     gameViewModel.loadHistory()
     gameViewModel.loadWords()
     gameViewModel.setColors(displayColors)
   }
-
   Box(
     Modifier
       .fillMaxSize()
-      .padding(horizontal = 8.dp, vertical = 16.dp)
   ) {
     Image(
       painter = painterResource(id = R.drawable.izzy),
@@ -140,6 +139,9 @@ fun GameScreen(
               color = MaterialTheme.colorScheme.onBackground
             )
           }
+
+          HorizontalBarChart(data = scores)
+
         } else {
           Keyboard(
             onKeyPress = { char -> gameViewModel.updateGuess(char) },
@@ -162,11 +164,12 @@ fun GameScreen(
             )
           }
         }
-        HorizontalBarChart(data = scores)
+
       }
     }
   }
 }
+
 
 @Composable
 fun HorizontalBarChart(data: List<Int>) {
@@ -192,11 +195,13 @@ fun HorizontalBarChart(data: List<Int>) {
     )
     data.forEachIndexed { index, value ->
 
-      Row(modifier = Modifier
-        .fillMaxWidth()
-        .padding(vertical = barSpacing)) {
+      Row(
+        modifier = Modifier
+          .fillMaxWidth()
+          .padding(vertical = barSpacing)
+      ) {
 
-        val barWidth = (value.toFloat() / maxValue ) * maxBarWidth.value - 5
+        val barWidth = (value.toFloat() / maxValue) * maxBarWidth.value - 5
 
         Text(
           text = (index + 1).toString(),
@@ -213,7 +218,7 @@ fun HorizontalBarChart(data: List<Int>) {
             .width(barWidth.dp) //
             .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(cornerRadius))
         )
-        if ( value > 0) {
+        if (value > 0) {
           Text(
             text = value.toString(),
             modifier = Modifier
