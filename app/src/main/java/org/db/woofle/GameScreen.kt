@@ -1,6 +1,5 @@
 package org.db.woofle
 
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -25,9 +24,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -67,7 +64,7 @@ fun GameScreen(
       painter = painterResource(id = R.drawable.izzy),
       contentDescription = null,
       modifier = Modifier.fillMaxSize(),
-      alpha = 0.50f,
+      alpha = 0.4f,
       contentScale = ContentScale.Crop
     )
     Column(
@@ -140,7 +137,8 @@ fun GameScreen(
               text = "Next Level",
               fontWeight = FontWeight.Bold,
               style = MaterialTheme.typography.bodyMedium,
-              color = MaterialTheme.colorScheme.onBackground)
+              color = MaterialTheme.colorScheme.onBackground
+            )
           }
         } else {
           Keyboard(
@@ -153,77 +151,79 @@ fun GameScreen(
             colors = ButtonDefaults.elevatedButtonColors(
               containerColor = MaterialTheme.colorScheme.background
             ),
-            onClick = {gameViewModel.submitGuess()
-          }) {
+            onClick = {
+              gameViewModel.submitGuess()
+            }) {
             Text(
               text = "Submit",
               fontWeight = FontWeight.Bold,
               style = MaterialTheme.typography.bodyMedium,
-              color = MaterialTheme.colorScheme.onBackground)
+              color = MaterialTheme.colorScheme.onBackground
+            )
           }
         }
-        Column(
-          modifier = Modifier
-            .fillMaxWidth()
-            .border(2.dp, Color.Gray)
-            .padding(8.dp)
-        ) {
-          val maxScore = scores.maxOrNull() ?: 1
-          scores.forEachIndexed {index, value ->
-            Bar(index, value, maxScore, MaterialTheme.colorScheme.onPrimary)
-            Spacer(modifier = Modifier.height(4.dp))
-          }
-        }
-
+        HorizontalBarChart(data = scores)
       }
     }
   }
 }
 
 @Composable
-fun Bar(
-  index: Int,
-  value: Int,
-  maxValue: Int,
-  color: Color
-) {
-  val barWidth = (value.toFloat() / maxValue) * 500.dp.value
+fun HorizontalBarChart(data: List<Int>) {
 
-  Row(
+  val barHeight = 14.dp
+  val barSpacing = 4.dp
+  val maxBarWidth = 300.dp
+  val cornerRadius = 4.dp
+  val maxValue = data.maxOrNull() ?: 1
+
+  Column(
+    horizontalAlignment = CenterHorizontally,
     modifier = Modifier
       .fillMaxWidth()
-      .height(20.dp),
-    verticalAlignment = Alignment.CenterVertically,
-    horizontalArrangement = Arrangement.spacedBy(4.dp)
+      .border(2.dp, Color.Gray, RoundedCornerShape(6.dp))
+      .padding(8.dp)
   ) {
     Text(
-      text = (index + 1).toString(),
-      style = MaterialTheme.typography.bodyMedium,
-      fontSize = 14.sp,
+      text = "Statistics",
       fontWeight = FontWeight.Bold,
-      color = MaterialTheme.colorScheme.onPrimary,
+      style = MaterialTheme.typography.bodyMedium,
+      color = MaterialTheme.colorScheme.onPrimary
     )
-    Spacer(modifier = Modifier.width(8.dp))
-    Canvas(
-      modifier = Modifier
-        .weight(1f)
-        .height(14.dp)
-    ) {
-      drawIntoCanvas { canvas ->
-        drawRect(
-          color = color,
-          size = Size(barWidth, size.height)
+    data.forEachIndexed { index, value ->
+
+      Row(modifier = Modifier
+        .fillMaxWidth()
+        .padding(vertical = barSpacing)) {
+
+        val barWidth = (value.toFloat() / maxValue ) * maxBarWidth.value - 5
+
+        Text(
+          text = (index + 1).toString(),
+          modifier = Modifier
+            .align(Alignment.CenterVertically),
+          style = MaterialTheme.typography.bodyMedium,
+          fontWeight = FontWeight.Bold
         )
+
+        Box(
+          modifier = Modifier
+            .height(barHeight)
+            .padding(start = 8.dp)
+            .width(barWidth.dp) //
+            .background(MaterialTheme.colorScheme.onPrimary, RoundedCornerShape(cornerRadius))
+        )
+        if ( value > 0) {
+          Text(
+            text = value.toString(),
+            modifier = Modifier
+              .padding(start = 8.dp)
+              .align(Alignment.CenterVertically),
+            style = MaterialTheme.typography.bodyMedium,
+            fontWeight = FontWeight.Bold
+          )
+        }
       }
     }
-    Spacer(modifier = Modifier.width(8.dp))
-    Text(
-      text = value.toString(),
-      style = MaterialTheme.typography.bodyMedium,
-      fontSize = 14.sp,
-      fontWeight = FontWeight.Bold,
-      color = MaterialTheme.colorScheme.onPrimary,
-    )
   }
 }
-

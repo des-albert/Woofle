@@ -116,12 +116,7 @@ class GameViewModel(application: Application) : AndroidViewModel(application) {
           isGuessCorrect = true
         } else if (guesses.size >= 6) {
           message = "Game over. The word was $targetWord."
-          level = 1
-          selectTargetWord()
-          guesses.clear()
-          colors.clear()
-          keyStates.clear()
-          guessCount = 0
+          proceedToNextLevel()
         } else {
           message = "Try again"
         }
