@@ -1,5 +1,6 @@
 package org.db.woofle
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -86,10 +87,11 @@ fun GameScreen(
 
             ) {
             for (i in 0 until 5) {
+              val boxColor = gameViewModel.colors[index][i]
               Box(
                 modifier = Modifier
                   .size(48.dp)
-                  .background(gameViewModel.colors[index][i], RoundedCornerShape(4.dp)),
+                  .background(animateColorAsState(targetValue = boxColor.copy(alpha = 0.4f), label = "").value, RoundedCornerShape(4.dp)),
                 contentAlignment = Alignment.Center
               ) {
                 Text(

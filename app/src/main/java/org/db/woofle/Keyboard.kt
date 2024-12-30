@@ -51,7 +51,7 @@ fun Keyboard(
             modifier
               .height(40.dp)
               .weight(1f)
-              .background(keyStates[char] ?: MaterialTheme.colorScheme.background, RoundedCornerShape(4.dp))
+              .background(keyStates[char] ?: MaterialTheme.colorScheme.onSecondary, RoundedCornerShape(4.dp))
               .clickable(
                 onClick = {
                   onKeyPress(char)
@@ -62,7 +62,7 @@ fun Keyboard(
             Text(
               text = char.toString(),
               fontWeight = FontWeight.Bold,
-              color = MaterialTheme.colorScheme.onPrimary,
+              color = MaterialTheme.colorScheme.secondaryContainer,
               fontSize = 18.sp
             )
           }
@@ -74,7 +74,7 @@ fun Keyboard(
               .height(40.dp)
               .weight(1f)
               .clip(RoundedCornerShape(2.dp))
-              .background(MaterialTheme.colorScheme.background,RoundedCornerShape(4.dp))
+              .background(MaterialTheme.colorScheme.onSecondary,RoundedCornerShape(4.dp))
               .clickable(
                 onClick = {
                   onBackspace()
@@ -85,7 +85,7 @@ fun Keyboard(
             Text(
               text = "⌫",
               fontWeight = FontWeight.Bold,
-              color = MaterialTheme.colorScheme.onPrimary,
+              color = MaterialTheme.colorScheme.secondaryContainer,
               fontSize = 18.sp
             )
           }
