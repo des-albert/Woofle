@@ -12,8 +12,8 @@ android {
     applicationId = "org.db.woofle"
     minSdk = 34
     targetSdk = 35
-    versionCode = 1
-    versionName = "1.0"
+    versionCode = 4
+    versionName = "4.1"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
@@ -22,6 +22,7 @@ android {
     release {
       isMinifyEnabled = false
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+      signingConfig = signingConfigs.getByName("debug")
     }
   }
   compileOptions {
