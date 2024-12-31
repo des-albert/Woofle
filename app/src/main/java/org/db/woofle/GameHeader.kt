@@ -22,7 +22,7 @@ fun GameHeader(
     fontWeight = FontWeight.Black,
     color = MaterialTheme.colorScheme.onPrimary
   )
-  Spacer(modifier = Modifier.height(16.dp))
+  Spacer(modifier = Modifier.height(8.dp))
   Text(
     text = message,
     style = MaterialTheme.typography.headlineSmall,
@@ -30,6 +30,6 @@ fun GameHeader(
     fontWeight = FontWeight.Black,
     color = MaterialTheme.colorScheme.onPrimary
   )
-  Spacer(modifier = Modifier.height(16.dp))
+  Spacer(modifier = Modifier.height(8.dp))
 }
 

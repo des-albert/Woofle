@@ -70,9 +70,9 @@ fun GameScreen(
     Column(
       modifier = Modifier
         .fillMaxSize()
-        .padding(16.dp),
+        .padding(12.dp),
       horizontalAlignment = CenterHorizontally,
-      verticalArrangement = Arrangement.Center
+      verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
       GameHeader(level, message)
