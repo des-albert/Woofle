@@ -78,7 +78,7 @@ fun GameScreen(
       GameHeader(level, message)
 
       Column(
-        verticalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(6.dp),
         horizontalAlignment = CenterHorizontally
       ) {
         gameViewModel.guesses.forEachIndexed { index, guess ->
@@ -150,7 +150,7 @@ fun GameScreen(
             onBackspace = { gameViewModel.deleteLastChar() },
             keyStates = gameViewModel.keyStates
           )
-          Spacer(modifier = Modifier.height(8.dp))
+          Spacer(modifier = Modifier.height(4.dp))
           ElevatedButton(
             colors = ButtonDefaults.elevatedButtonColors(
               containerColor = MaterialTheme.colorScheme.background

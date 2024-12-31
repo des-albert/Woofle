@@ -36,10 +36,10 @@ fun Keyboard(
   )
   Column(
     horizontalAlignment = CenterHorizontally,
-    verticalArrangement = Arrangement.spacedBy(8.dp),
+    verticalArrangement = Arrangement.spacedBy(6.dp),
     modifier = Modifier
       .fillMaxWidth()
-      .padding(8.dp)
+      .padding(6.dp)
   ) {
     rows.forEachIndexed { rowIndex, row ->
       Row(
