@@ -12,8 +12,8 @@ android {
     applicationId = "org.db.woofle"
     minSdk = 34
     targetSdk = 35
-    versionCode = 4
-    versionName = "4.1"
+    versionCode = 6
+    versionName = "6.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
   }
